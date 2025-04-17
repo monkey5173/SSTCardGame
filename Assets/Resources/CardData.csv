@@ -1,0 +1,4 @@
+﻿cardName,description,frontImagePath,backImagePath,cost,damage,health
+Normal,1의 데미지를 줍니다.,CardImages/Normal,CardImages/CardBackGround,1,1,1
+Nightmare,2의 데미지를 줍니다.,CardImages/Nightmare,CardImages/CardBackGround,2,2,3
+Hell,3의 데미지를 줍니다.,CardImages/Hell,CardImages/CardBackGround,3,3,5
