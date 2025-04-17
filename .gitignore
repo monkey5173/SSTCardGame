@@ -1,39 +1,130 @@
-# Unity 기본 무시 설정
-
+##############################################
+# ✅ Unity 기본 무시 항목
+##############################################
 [Ll]ibrary/
 [Tt]emp/
 [Oo]bj/
-[Bb]uild/
-[Bb]uilds/
+[Bb]uild*/
 [Ll]ogs/
-[Mm]emoryCaptures/
 UserSettings/
-
-# Unity 빌드 결과물
-*.apk
-*.aab
-*.unitypackage
-
-# VS / Rider / MonoDevelop
-.vs/
-.idea/
-*.sln
+MemoryCaptures/
+Assets/StreamingAssets/aa.meta
+Assets/StreamingAssets/aa/
 *.csproj
-*.pidb
+*.unityproj
+*.sln
 *.suo
 *.user
 *.userprefs
-*.unityproj
+*.pidb
 *.booproj
-*.vcxproj
+*.svd
 *.pdb
+*.mdb
 *.opendb
 *.VC.db
 
-# OS 임시 파일
+# Visual Studio / JetBrains Rider
+.vs/
+.idea/
+*.iml
+
+# 운영체제 및 에디터 임시 파일
 .DS_Store
 Thumbs.db
 
-# 기타 Git 충돌 시 무시할 수 있는 파일
-*.rej
-*.orig
+##############################################
+# ✅ Firebase SDK + Google 종속성 무시
+##############################################
+
+# Firebase config (민감 + 크기 큼)
+google-services.json
+GoogleService-Info.plist
+firebase.json
+
+# Firebase 설치 및 자동생성 파일
+Assets/ExternalDependencyManager/
+Assets/PlayServicesResolver/
+Assets/GeneratedLocalRepo/
+Assets/Firebase/
+Assets/GoogleMobileAds/
+Assets/GooglePlayGames/
+
+# Android/iOS 캐시 및 종속성
+.gradle/
+local.properties
+*.iml
+Pods/
+Podfile
+Podfile.lock
+*.xcworkspace
+*.xcuserstate
+xcuserdata/
+
+# Firebase Emulator & CLI 설정
+.firebase/
+.firebaserc
+firebase-debug.log
+
+##############################################
+# ✅ 빌드 결과물, 대용량 파일 무시
+##############################################
+*.apk
+*.aab
+*.exe
+*.app
+*.zip
+*.tar
+*.gz
+*.rar
+*.7z
+*.symbols.zip
+
+# 외부 플러그인/SDK 바이너리 무시 (크기 큼)
+*.dll
+*.so
+*.jar
+*.aar
+*.dex
+*.framework
+*.bundle
+*.bin
+*.blob
+*.dat
+*.asset
+*.resS
+*.mp4
+*.wav
+*.mp3
+*.ogg
+*.png
+*.jpg
+*.jpeg
+*.tga
+*.psd
+*.tiff
+*.fbx
+*.obj
+*.mp3.meta
+*.wav.meta
+*.png.meta
+*.jpg.meta
+
+##############################################
+# ✅ 기타 무시하고 싶은 것들
+##############################################
+# Rider/VS Code 사용자 설정
+*.code-workspace
+.vscode/
+
+# Unity Collaborate 캐시
+.collab/
+
+# Crash Reporter
+sysinfo.txt
+
+# Shader Cache
+*.hlsl
+*.cginc
+*.shadercache
+
