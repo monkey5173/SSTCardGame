@@ -8,7 +8,7 @@ public class CardSpawner : MonoBehaviour
 
     [SerializeField] Transform spawnPoint;
 
-    [SerializeField] float xOffset = 2.5f;
+    [SerializeField] float zOffset = 2.5f;
 
     CardSobj[] cardDataList;
 
@@ -18,7 +18,7 @@ public class CardSpawner : MonoBehaviour
 
         for (int i = 0; i < cardDataList.Length; i++) 
         {
-            Vector3 pos = new Vector3(i * xOffset, 3, 0);
+            Vector3 pos = new Vector3(0, 3, i * zOffset);
 
             GameObject card = Instantiate(cardPrefab, pos, Quaternion.identity, spawnPoint);
             CardDisplay cardDisplay = card.GetComponent<CardDisplay>();
