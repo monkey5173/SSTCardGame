@@ -493,6 +493,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4649835043089232210}
   - component: {fileID: 7761887015126585975}
+  - component: {fileID: 8438818497683286284}
   m_Layer: 0
   m_Name: CardFrame
   m_TagString: Untagged
@@ -536,6 +537,18 @@ MonoBehaviour:
   cardCostText: {fileID: 4764673394954802466}
   cardDamageText: {fileID: 6265310279456222882}
   cardHealthText: {fileID: 5305653938909028209}
+--- !u!114 &8438818497683286284
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7415297813462673459}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6829e2fcee5d44348af8804feabac28b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &7480643035460262416
 GameObject:
   m_ObjectHideFlags: 0

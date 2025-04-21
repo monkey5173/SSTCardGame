@@ -6,23 +6,21 @@ public class CardSpawner : MonoBehaviour
 {
     [SerializeField] GameObject cardPrefab;
 
-    [SerializeField] Transform spawnPoint;
-
-    [SerializeField] float zOffset = 2.5f;
-
-    CardSobj[] cardDataList;
+    [SerializeField]
+    Transform[] handSlots;
 
     private void Start()
     {
-        cardDataList = Resources.LoadAll<CardSobj>("CardAssets");
+        var cardDataList = Resources.LoadAll<CardSobj>("CardAssets");
 
-        for (int i = 0; i < cardDataList.Length; i++) 
+        for (int i = 0; i < cardDataList.Length && i < handSlots.Length; i++)
         {
-            Vector3 pos = new Vector3(0, 3, i * zOffset);
+            GameObject card = Instantiate(cardPrefab);
+            card.GetComponent<CardDisplay>().SetCardData(cardDataList[i]);
 
-            GameObject card = Instantiate(cardPrefab, pos, Quaternion.identity, spawnPoint);
-            CardDisplay cardDisplay = card.GetComponent<CardDisplay>();
-            cardDisplay.SetCardData(cardDataList[i]);
+            float delay = 0.4f * i;
+
+            card.GetComponent<CardDraw>().AnimateDraw(handSlots[i].position, delay);
         }
     }
 }
