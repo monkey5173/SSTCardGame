@@ -34,7 +34,7 @@ public class CardInputManager : MonoBehaviour
                     }
 
                     selectedCard = hit.transform;
-                    selectedCard.DOScale(selectedCard.transform.localScale * 1.4f, 0.2f);
+                    selectedCard.DOScale(Vector3.one * 1.4f, 0.2f);
                 }
             }
         }
