@@ -218,7 +218,8 @@ GameObject:
   - component: {fileID: 5227896603074420230}
   - component: {fileID: 8923349067123584571}
   - component: {fileID: 8779937134218453917}
-  m_Layer: 0
+  - component: {fileID: 896799993535425082}
+  m_Layer: 6
   m_Name: FrontCard
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -312,6 +313,20 @@ MeshCollider:
   m_Convex: 0
   m_CookingOptions: 30
   m_Mesh: {fileID: 10210, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!114 &896799993535425082
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5963409470880468682}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fbf3575480402db40813e763382412fb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  color: 1
+  eraseRenderer: 0
 --- !u!1 &6893308905542650693
 GameObject:
   m_ObjectHideFlags: 0
@@ -584,7 +599,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c978575d11fc52b45849f1b56d4fea43, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  frontRender: {fileID: 8923349067123584571}
+  outline: {fileID: 896799993535425082}
 --- !u!1 &7480643035460262416
 GameObject:
   m_ObjectHideFlags: 0

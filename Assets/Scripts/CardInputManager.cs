@@ -69,6 +69,14 @@ public class CardInputManager : MonoBehaviour
             else
             {
                 // 선택된 카드가 있는 상태에서
+                // 카드가 아닌 다른 Collider에 마우스 올려놓았을 때
+                if (lastHovered != null)
+                {
+                    lastHovered.SetHighlight(false);
+                    lastHovered = null;
+                }
+
+                // 선택된 카드가 있는 상태에서
                 // 카드가 아닌 다른 Collider에 마우스 왼쪽 클릭 했을 때
                 if (Input.GetMouseButtonDown(0) && selectedCard != null)
                 {
