@@ -6,21 +6,22 @@ public class CardSpawner : MonoBehaviour
 {
     [SerializeField] GameObject cardPrefab;
 
-    [SerializeField]
-    Transform[] handSlots;
+    [SerializeField] CardHandManager handManager;
 
     private void Start()
     {
         var cardDataList = Resources.LoadAll<CardSobj>("CardAssets");
 
-        for (int i = 0; i < cardDataList.Length && i < handSlots.Length; i++)
+        for (int i = 0; i < cardDataList.Length; i++)
         {
             GameObject card = Instantiate(cardPrefab);
             card.GetComponent<CardDisplay>().SetCardData(cardDataList[i]);
 
             float delay = 0.4f * i;
 
-            card.GetComponent<CardDraw>().AnimateDraw(handSlots[i].position, delay);
+            card.GetComponent<CardDraw>().AnimateDraw(delay);
+
+            handManager.AddCard(card.transform);
         }
     }
 }

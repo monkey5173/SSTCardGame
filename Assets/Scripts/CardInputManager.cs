@@ -41,7 +41,7 @@ public class CardInputManager : MonoBehaviour
                 // 마우스 왼쪽 버튼 클릭했을 경우 -> 카드 선택 처리
                 if(Input.GetMouseButtonDown(0))
                 {
-                    // 이미 선택된 카드가 다른 카드였다면 -> 원래 상태로 복귀 처리
+                    // 이미 선택된 카드와 현재 선택한 위치의 카드가 다르다면? -> 원래 상태로 복귀
                     if (selectedCard != hit.transform)
                     {
                         // 이전에 선택된 카드가 있었다면? -> 원래 상태로 복귀
@@ -58,7 +58,7 @@ public class CardInputManager : MonoBehaviour
                         selectedCardOriginScale = selectedCard.transform.localScale;
                         selectedCardOriginPos = selectedCard.transform.localPosition;
 
-                        // 선택된 카드 확대, Y축 살짝 위로 띄움
+                        // 선택된 전체적으로 위치 조정
                         Vector3 offset = new Vector3(4.5f, 3f, 1.5f);
                         selectedCard.DOScale(Vector3.one * 1.4f, 0.2f);
                         selectedCard.DOLocalMove(selectedCardOriginPos + offset, 0.2f);
