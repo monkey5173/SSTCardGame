@@ -7,11 +7,17 @@ using UnityEngine;
 
 public class CardInputManager : MonoBehaviour
 {
-    private CardHighlight lastHovered;
-    private Transform selectedCard;
+    private CardHighlight lastHovered;          // 마지막으로 건드린 카드 정보
+    private Transform selectedCard;             // 현재 선택된 카드 위치 정보
 
-    private Vector3 selectedCardOriginScale;
-    private Vector3 selectedCardOriginPos;
+    private Vector3 selectedCardOriginScale;    // 현재 선택된 카드의 원래 스케일(크기)
+    private Vector3 selectedCardOriginPos;      // 현재 선택된 카드의 원래 위치
+
+    private Vector3 dragStartPos;               // 드래그 시작된 위치
+    private Vector3 dragOffset;                 // 드래그 시 마우스와 카드 사이 거리 보정값
+
+    private bool isMouseDown = false;           // 마우스 버튼을 누르고 있는지 판단
+    private bool isDragging = false;            // 현재 드래그 중인지 여부
 
     private void Update()
     {
@@ -29,7 +35,7 @@ public class CardInputManager : MonoBehaviour
             if (cardHighlight != null)
             {
                 // 이전에 Hover된 카드가 있고, 현재 카드와 다르다면? -> 이전 카드의 하이라이트 끄기
-                if(lastHovered != null && lastHovered != cardHighlight)
+                if (lastHovered != null && lastHovered != cardHighlight)
                 {
                     lastHovered.SetHighlight(false);
                 }
@@ -37,74 +43,145 @@ public class CardInputManager : MonoBehaviour
                 // 현재 카드 하이라이트 켜기
                 cardHighlight.SetHighlight(true);
                 lastHovered = cardHighlight;
-
-                // 마우스 왼쪽 버튼 클릭했을 경우 -> 카드 선택 처리
-                if(Input.GetMouseButtonDown(0))
-                {
-                    // 이미 선택된 카드와 현재 선택한 위치의 카드가 다르다면? -> 원래 상태로 복귀
-                    if (selectedCard != hit.transform)
-                    {
-                        // 이전에 선택된 카드가 있었다면? -> 원래 상태로 복귀
-                        if(selectedCard != null)
-                        {
-                            selectedCard.DOScale(Vector3.one, 0.2f);    // 크기 복귀
-                            selectedCard.DOLocalMove(selectedCardOriginPos, 0.2f);   // 위치 복귀
-                        }
-
-                        // 새 카드 선택
-                        selectedCard = hit.transform;
-
-                        // 선택된 카드의 원래 상태 저장 (한 번만)
-                        selectedCardOriginScale = selectedCard.transform.localScale;
-                        selectedCardOriginPos = selectedCard.transform.localPosition;
-
-                        // 선택된 전체적으로 위치 조정
-                        Vector3 offset = new Vector3(4.5f, 3f, 1.5f);
-                        selectedCard.DOScale(Vector3.one * 1.4f, 0.2f);
-                        selectedCard.DOLocalMove(selectedCardOriginPos + offset, 0.2f);
-                    }
-
-                }
             }
             else
             {
-                // 선택된 카드가 있는 상태에서
-                // 카드가 아닌 다른 Collider에 마우스 올려놓았을 때
+                // 충돌한 오브젝트가 카드가 아니라면 -> 강조 표시 끄기
                 if (lastHovered != null)
                 {
                     lastHovered.SetHighlight(false);
                     lastHovered = null;
                 }
 
-                // 선택된 카드가 있는 상태에서
-                // 카드가 아닌 다른 Collider에 마우스 왼쪽 클릭 했을 때
                 if (Input.GetMouseButtonDown(0) && selectedCard != null)
                 {
-                    // 선택 카드 원래 상태로 복귀
                     selectedCard.DOScale(Vector3.one, 0.2f);
                     selectedCard.DOLocalMove(selectedCardOriginPos, 0.2f);
                     selectedCard = null;
                 }
             }
+
+            // 카드 클릭 감지 ( 왼쪽 마우스 버튼 클릭 )
+            if (Input.GetMouseButtonDown(0) && cardHighlight != null)
+            {
+                // 선택된 카드에 현재 마우스 포인터 위치에 맞은 오브젝트(카드) 위치 정보 담음
+                selectedCard = hit.transform;
+
+                // 선택된 카드의 원래 위치, 크기 저장 ( 원래 위치, 크기로 복귀하기 위해서 )
+                selectedCardOriginScale = selectedCard.localScale;
+                selectedCardOriginPos = selectedCard.localPosition;
+
+                // 드래그 시작 위치를 현재 마우스 위치로 설정
+                dragStartPos = Input.mousePosition;
+                // 마우스 버튼 눌렀다고 판단
+                isMouseDown = true;
+            }
         }
         else
         {
-            // 마우스가 어떤 Collider와도 충돌하지 않았을 때 (빈 공간 위에 있을 때)
-
-            // 만약 하이라이트 되어있던 카드가 있다면? -> 하이라이트 끄기
+            // 마우스가 오브젝트 위에 있지 않을 경우 -> 강조 해제
             if (lastHovered != null)
             {
                 lastHovered.SetHighlight(false);
                 lastHovered = null;
             }
 
-            // 빈 공간 클릭 시 -> 선택된 카드가 있다면? 원래 상태로 복귀
-            if(Input.GetMouseButtonDown(0) && selectedCard != null)
+            if (Input.GetMouseButtonDown(0) && selectedCard != null)
             {
-                selectedCard.DOScale(Vector3.one, 0.2f);
-                selectedCard.DOLocalMove(selectedCardOriginPos, 0.2f);
-                selectedCard = null;
+                ResetCardSelection();
             }
+        }
+
+        // 마우스를 누른 상태에서, 드래그 중인 상황이 아니면
+        if (isMouseDown && !isDragging)
+        {
+            // 드래그로 판단할 거리 계산
+            float dragDistance = Vector3.Distance(dragStartPos, Input.mousePosition);
+
+            // 마우스를 누른 상태에서 드래그를 일정거리 이상 하면?
+            if (dragDistance > 10f)
+            {
+                isDragging = true;
+
+                // 드래그 시작시 오프셋 계산
+                Ray dragRay = Camera.main.ScreenPointToRay(Input.mousePosition);
+                if (Physics.Raycast(dragRay, out RaycastHit dargHit))
+                {
+                    dragOffset = selectedCard.position - dargHit.point;
+                }
+
+                // 선택된 카드 원래 크기로 복귀
+                selectedCard.DOScale(selectedCardOriginScale, 0.2f);
+            }
+        }
+
+        // 드래그 중이면서, 현재 선택된 카드가 있다면? -> 드래그
+        if (isDragging && selectedCard != null)
+        {
+            Ray dragRay = Camera.main.ScreenPointToRay(Input.mousePosition);
+
+            if (Physics.Raycast(dragRay , out RaycastHit dragHit))
+            {
+                Vector3 targetPos = dragHit.point + dragOffset;
+                targetPos.y = selectedCardOriginPos.y;
+
+                selectedCard.position = targetPos;
+            }
+        }
+
+        // 마우스 버튼 눌린 상태에서 ( 클릭을 했던, 드래그를 했던) 버튼을 땐다면
+        if (Input.GetMouseButtonUp(0) && isMouseDown)
+        {
+            isMouseDown = false;
+
+            Ray dropRay = Camera.main.ScreenPointToRay(Input.mousePosition);
+
+            if (Physics.Raycast(dropRay, out RaycastHit dropHit))
+            {
+                // 드래그 상태였다면? -> 필드 출전 or 원래 상태로 복귀
+                if (isDragging)
+                {
+                    isDragging = false;
+
+                    // 마우스 놓은 위치에 콜라이더가 Field 태그라면? ( 출전 필드 위치 )
+                    if (dropHit.collider.CompareTag("Field"))
+                    {
+                        // 카드 출전 처리
+                        var handCard = FindObjectOfType<CardHandManager>();
+                        handCard.RemoveCard(selectedCard);
+
+                        selectedCard.DOMove(dropHit.point, 0.2f).SetEase(Ease.OutQuad);
+                        selectedCard.SetParent(null);
+                        selectedCard = null;
+                        return;
+                    }
+                    else
+                    {
+                        // Field 태그가 아니라면 원래 위치로 복귀 처리
+                        selectedCard.DOLocalMove(selectedCardOriginPos, 0.2f).SetEase(Ease.OutQuad);
+                        selectedCard = null;
+                        return;
+                    }
+                }
+                else if (selectedCard != null)
+                {
+                    // 선택된 카드가 있는데, 드래그 상태가 아니다? 즉 클릭 상태라는 소리
+                    Vector3 offset = new Vector3(4.5f, 3f, 1.5f);
+                    selectedCard.DOScale(Vector3.one * 1.4f, 0.2f);
+                    selectedCard.DOLocalMove(selectedCardOriginPos + offset, 0.2f);
+                }
+            }
+        }
+    }
+
+    // 원래 크기, 상태로 복귀 처리하는 함수
+    public void ResetCardSelection()
+    {
+        if (selectedCard != null)
+        {
+            selectedCard.DOScale(Vector3.one, 0.2f);
+            selectedCard.DOLocalMove(selectedCardOriginPos, 0.2f);
+            selectedCard = null;
         }
     }
 }
