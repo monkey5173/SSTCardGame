@@ -18,6 +18,7 @@ public class CardInputManager : MonoBehaviour
 
     private bool isMouseDown = false;           // 마우스 버튼을 누르고 있는지 판단
     private bool isDragging = false;            // 현재 드래그 중인지 여부
+    private bool isCardExpanded = false;        // 현재 카드가 확대된 상태인지 판단
 
     private void Update()
     {
@@ -52,29 +53,33 @@ public class CardInputManager : MonoBehaviour
                     lastHovered.SetHighlight(false);
                     lastHovered = null;
                 }
-
-                if (Input.GetMouseButtonDown(0) && selectedCard != null)
-                {
-                    selectedCard.DOScale(Vector3.one, 0.2f);
-                    selectedCard.DOLocalMove(selectedCardOriginPos, 0.2f);
-                    selectedCard = null;
-                }
             }
 
             // 카드 클릭 감지 ( 왼쪽 마우스 버튼 클릭 )
             if (Input.GetMouseButtonDown(0) && cardHighlight != null)
             {
+                // 이미 선택된 카드고 확대된 상태라면 -> 다시 클릭하지 않음
+                if (selectedCard == hit.transform && isCardExpanded)
+                {
+                    return;
+                }
+
                 // 선택된 카드에 현재 마우스 포인터 위치에 맞은 오브젝트(카드) 위치 정보 담음
                 selectedCard = hit.transform;
 
                 // 선택된 카드의 원래 위치, 크기 저장 ( 원래 위치, 크기로 복귀하기 위해서 )
                 selectedCardOriginScale = selectedCard.localScale;
-                selectedCardOriginPos = selectedCard.localPosition;
+                selectedCardOriginPos = selectedCard.position;
 
                 // 드래그 시작 위치를 현재 마우스 위치로 설정
                 dragStartPos = Input.mousePosition;
                 // 마우스 버튼 눌렀다고 판단
                 isMouseDown = true;
+            }
+            else if (Input.GetMouseButtonDown(0) && selectedCard != null)
+            {
+                // 카드 외부 클릭 시 원래 상태로 복귀 처리
+                ResetCardSelection();
             }
         }
         else
@@ -110,8 +115,12 @@ public class CardInputManager : MonoBehaviour
                     dragOffset = selectedCard.position - dargHit.point;
                 }
 
-                // 선택된 카드 원래 크기로 복귀
-                selectedCard.DOScale(selectedCardOriginScale, 0.2f);
+                // 드래그 중 확대 상태 해제
+                if (isCardExpanded)
+                {
+                    selectedCard.DOScale(selectedCardOriginScale, 0.2f);
+                    isCardExpanded = false;
+                }
             }
         }
 
@@ -158,30 +167,44 @@ public class CardInputManager : MonoBehaviour
                     else
                     {
                         // Field 태그가 아니라면 원래 위치로 복귀 처리
-                        selectedCard.DOLocalMove(selectedCardOriginPos, 0.2f).SetEase(Ease.OutQuad);
-                        selectedCard = null;
+                        ResetCardSelection();
                         return;
                     }
                 }
-                else if (selectedCard != null)
+                else if (selectedCard != null && !isCardExpanded)
                 {
                     // 선택된 카드가 있는데, 드래그 상태가 아니다? 즉 클릭 상태라는 소리
                     Vector3 offset = new Vector3(4.5f, 3f, 1.5f);
                     selectedCard.DOScale(Vector3.one * 1.4f, 0.2f);
-                    selectedCard.DOLocalMove(selectedCardOriginPos + offset, 0.2f);
+                    selectedCard.DOMove(selectedCardOriginPos + offset, 0.2f);
+                    isCardExpanded = true;
                 }
+            }
+            else if (selectedCard != null)
+            {
+                ResetCardSelection();
             }
         }
     }
 
-    // 원래 크기, 상태로 복귀 처리하는 함수
+    // 원래 크기, 상태로 복귀 처리 + 강조 표시 해제하는 함수
     public void ResetCardSelection()
     {
+        // 최근 강조 표시된 카드 있다면? -> 강조 표시 해제
+        if (lastHovered != null)
+        {
+            lastHovered.SetHighlight(false);
+            lastHovered = null;
+        }
+
+        // 선택된 카드가 있다면? -> 원래 크기, 위치로 복귀 처리
         if (selectedCard != null)
         {
             selectedCard.DOScale(Vector3.one, 0.2f);
-            selectedCard.DOLocalMove(selectedCardOriginPos, 0.2f);
+            selectedCard.DOMove(selectedCardOriginPos, 0.2f);
             selectedCard = null;
+            isDragging = false;
+            isCardExpanded = false;
         }
     }
 }
