@@ -13,6 +13,11 @@ public class CardDisplay : MonoBehaviour
     [SerializeField] TextMeshPro cardDamageText;
     [SerializeField] TextMeshPro cardHealthText;
 
+    public string CardName => cardNameText.text;
+    public int CardCost => int.Parse(cardCostText.text);
+    public int CardDamage => int.Parse(cardDamageText.text);
+    public int CardHealth => int.Parse(cardHealthText.text);
+
     public void SetCardData(CardSobj cardData)
     {
         cardNameText.text = cardData.name;

@@ -1,4 +1,5 @@
 using DG.Tweening;
+using JetBrains.Annotations;
 using System.Collections;
 using System.Collections.Generic;
 using System.Security.Cryptography;
@@ -7,9 +8,11 @@ using UnityEngine;
 
 public class CardInputManager : MonoBehaviour
 {
+    [SerializeField] Transform fieldZonePos;    // 출전 필드 위치
+
     private CardHighlight lastHovered;          // 마지막으로 건드린 카드 정보
     private Transform selectedCard;             // 현재 선택된 카드 위치 정보
-
+    
     private Vector3 selectedCardOriginScale;    // 현재 선택된 카드의 원래 스케일(크기)
     private Vector3 selectedCardOriginPos;      // 현재 선택된 카드의 원래 위치
 
@@ -159,9 +162,23 @@ public class CardInputManager : MonoBehaviour
                         var handCard = FindObjectOfType<CardHandManager>();
                         handCard.RemoveCard(selectedCard);
 
-                        selectedCard.DOMove(dropHit.point, 0.2f).SetEase(Ease.OutQuad);
-                        selectedCard.SetParent(null);
-                        selectedCard = null;
+                        var fieldManager = fieldZonePos.GetComponent<CardFieldManager>();
+
+                        FieldCard fieldCard = selectedCard.GetComponent<FieldCard>();
+                        CardDisplay cardDisplay = selectedCard.GetComponent<CardDisplay>();
+
+                        if (fieldCard != null && cardDisplay != null)
+                        {
+                            fieldManager.AddCard(fieldCard);
+
+                            int cost = cardDisplay.CardCost;
+                            int damage = cardDisplay.CardDamage;
+                            int health = cardDisplay.CardHealth;
+
+                            fieldCard.Init(cost, damage, health);
+                        }
+
+
                         return;
                     }
                     else

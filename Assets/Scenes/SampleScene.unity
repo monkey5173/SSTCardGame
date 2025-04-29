@@ -2769,6 +2769,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1403497770}
   - component: {fileID: 1403497769}
+  - component: {fileID: 1403497771}
   m_Layer: 0
   m_Name: CardFieldZone
   m_TagString: Field
@@ -2806,12 +2807,24 @@ Transform:
   m_GameObject: {fileID: 1403497768}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -3.5, y: 1, z: 0}
+  m_LocalPosition: {x: -5.1, y: 1, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1403497771
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1403497768}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c161fe78b0f840748adf7abf010ee12c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1404838116
 GameObject:
   m_ObjectHideFlags: 0
@@ -3248,6 +3261,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9c7e3e6af5ebf7146a7b109c7d8e0d21, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  fieldZonePos: {fileID: 1403497770}
 --- !u!4 &1639891885
 Transform:
   m_ObjectHideFlags: 0
